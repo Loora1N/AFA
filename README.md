@@ -8,7 +8,7 @@ Automated Firmware Analysis(AFA) is a command-line tool for the Linux platform, 
  ./setup.sh
 ```
 
-## 使用方式
+## usage
 
 #### 环境模拟
 
@@ -18,9 +18,10 @@ Automated Firmware Analysis(AFA) is a command-line tool for the Linux platform, 
 
 #### 敏感信息搜集
 
-​	输入：固件文件路径
-
-​	输出：敏感信息报告
+```sh
+./afa.py <rootfs_path> <file_name>
+```
+报告默认保存在Report/info-report/<file_name>
 
 #### 固件功能模块测试
 
