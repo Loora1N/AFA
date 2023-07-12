@@ -22,6 +22,11 @@ cd AFLplusplus
 make distrib
 sudo make install
 
+#fuzzentry
+
+cd source/fuzzentry
+gcc fuzzentry.c -o fuzzentry
+
 
 #binwalk
 cd source/binwalk

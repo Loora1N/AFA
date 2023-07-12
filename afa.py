@@ -4,6 +4,7 @@ import os
 import os.path
 import sys
 import time
+import threading
 
 
 def printTable():
@@ -28,7 +29,7 @@ def printHelp():
     print('information search:')
     print('./afa.py -s <firmware_path> <report.txt>\n')
     print('module fuzz:')
-    print('./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path>\n')
+    print('./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path> <IPaddress> <port>\n')
 
                                        
 
@@ -48,37 +49,75 @@ def searchInfo():
     os.system(payload)
     
     #TODO: create a report
+
+# thread restart   
+def restart_target(path):
+    print(path+"\n")
+    t_startsrv = threading.Thread(target=start_target,args=(path,))
+    t_startsrv.daemon = True
+    t_startsrv.start()
+    # t_startsrv.join()
+
+# thread check
+def check_fuzz_target(target_path):
+    while True:
+        tmp_file = './corn.lock'
+        tmp_path = "sh -c "+ target_path
+        os.system('''ps -ef | grep "%s" | grep -v grep > %s'''%(tmp_path,tmp_file))
+        if not(os.path.getsize(tmp_file)):
+            restart_target(target_path)
+        else:
+            f = open(tmp_file,"r+")
+            f.truncate(0)
+        time.sleep(2)
+
+#start service        
+def start_target(target_path):
+    os.system(target_path)
     
+#start fuzz
+def fuzz_target(payload):
+    os.system(payload)
     
 def startFuzz(cnt):
     inputPath = sys.argv[3]
     outputPath = sys.argv[5]
     elfPath = sys.argv[7]
-    if cnt == 8:
-        payload = "afl-fuzz -i "+ inputPath + " -o " + outputPath + " -Q -- " + elfPath
-    elif cnt == 9:
-        payload = "afl-fuzz -i "+ inputPath + " -o " + outputPath + " -Q -- " + elfPath + ' @@'
+    IPaddress = sys.argv[8]
+    port = sys.argv[9]
+    if cnt == 10:
+        payload = "afl-fuzz -i "+ inputPath + " -o " + outputPath + \
+            " -Q -- ./source/fuzzentry/fuzzentry" + " " + IPaddress + " " + port
     else:
         return 1
-    os.system(payload)
+    # start sevice thread
+    print("starting service......\n")
+    restart_target(elfPath)
+    time.sleep(2)
+    
+    # start check thread
+    print("starting check thread......\n")
+    t_check = threading.Thread(target = check_fuzz_target,args=(elfPath,))
+    t_check.daemon = True
+    t_check.start()
+    time.sleep(2)
+    #start fuzz thread
+    t_fuzz = threading.Thread(target = fuzz_target,args=(payload,))
+    t_fuzz.daemon = True
+    t_fuzz.start()
+    t_fuzz.join()
 
     
 
 def checkArgc(cnt):
     if cnt > 2:
         if sys.argv[1] == '-f':
-            if cnt == 8:
+            if cnt == 10:
                 if sys.argv[2] == '-i':
-                    if sys.agv[4] == '-o':
+                    if sys.argv[4] == '-o':
                         if sys.argv[6] == '--':
                             return 'fuzz'
-            if cnt == 9:
-                if sys.argv[2] == '-i':
-                    if sys.agv[4] == '-o':
-                        if sys.argv[6] == '--':
-                            if sys.argv[8] == '@@':
-                                return 'fuzz'
-            return 'Usahe -f'
+            return 'Usage -f'
         
         elif sys.argv[1] == '-s':
             if cnt == 4:
@@ -112,7 +151,7 @@ def start():
         exit()
         
     elif mode =='Usage -f':
-        print("usage: please use ./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path>")
+        print("usage: please use ./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path> <IPaddress> <port>")
         exit()
         
     elif mode =='help':
