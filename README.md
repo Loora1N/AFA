@@ -31,17 +31,13 @@ Automated Firmware Analysis(AFA) is a command-line tool for the Linux platform, 
 
 其中`<input_floder>`是用于存放测试输入的文件夹路径，`<output_floder>` 是用于存放测试输出的文件夹路径
 
-#### 标准输入模糊测试
+**注意：使用此功能时请保证root权限，防止端口开启出现问题**
+
+#### TCP输入模糊测试
 
 ```sh
-./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path>
-```
-
-#### 文件输入模糊测试
-
-利用`@@`替换命令行运行时的`argv`传入参数
-```sh
-./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path> @@
+sudo su
+./afa.py -f -i <input_floder> -o <output_floder> -- <srv_elf_path> <ip> <port>
 ```
 
 
