@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import os.path
 import sys
@@ -29,9 +28,7 @@ def printHelp():
     print('information search:')
     print('./afa.py -s <firmware_path> <report.txt>\n')
     print('module fuzz:')
-    print('./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path> <IPaddress> <port>\n')
-
-                                       
+    print('./afa.py -f -i <input_floder> -o <output_floder> -- <elf_path> <IPaddress> <port>\n')                               
 
 def searchInfo():
     
@@ -45,7 +42,7 @@ def searchInfo():
     
     #TODO: info searcher and save file
     firmFloder = 'images/_'+firmFilename+'.extracted'    
-    payload = "scripts/infosearcher.sh " + firmFloder + " Report/info-report/"+filename
+    payload = "python3 scripts/infosearch.py " + firmFloder + " Report/info-report/"+filename
     os.system(payload)
     
     #TODO: create a report
@@ -79,7 +76,7 @@ def start_target(target_path):
 def fuzz_target(payload):
     os.system(payload)
     
-def startFuzz(cnt):
+def startLocalTcpFuzz(cnt):
     inputPath = sys.argv[3]
     outputPath = sys.argv[5]
     elfPath = sys.argv[7]
@@ -144,7 +141,7 @@ def start():
         
     elif mode == 'fuzz':
         printTable()
-        startFuzz(len(sys.argv))
+        startLocalTcpFuzz(len(sys.argv))
         
     elif mode =='Usage -s':
         print("usage: please use ./afa.py -s <firmware_path> <report.txt>")
