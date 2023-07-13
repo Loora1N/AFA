@@ -11,6 +11,9 @@ def usage():
     sys.exit(1)
 
 def msg(message):
+    data = message.split("\n")
+    tmp = list(set(data))
+    message = "\n".join(tmp)[1:]
     with open(FILE, "a") as file:
         file.write(message + "\n")
     print(message)
