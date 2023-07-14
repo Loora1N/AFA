@@ -29,16 +29,35 @@ Automated Firmware Analysis(AFA) is a command-line tool for the Linux platform, 
 
 ### 固件功能模块测试
 
-其中`<input_floder>`是用于存放测试输入的文件夹路径，`<output_floder>` 是用于存放测试输出的文件夹路径
+我们在AFL++的基础上进行改进，增添了对使用socket进行数据传输的二进制程序的模糊测试功能。其中`mode`共有三个模式：
 
-**注意：使用此功能时请保证root权限，防止端口开启出现问题**
+- `local server`模式
 
-#### TCP输入模糊测试
+    **local server**模式指在本地对二进制server服务进行模糊测试，需要保证server程序可以在本机运行，使用方式如下：
+    
+    ```sh
+    sudo su
+    ./afa.py -f -i <input_floder> -m local-sever -- <srv_elf_path> <ip> <remote>
+    ```
+    **注意：使用此功能时请保证root权限，防止端口开启出现问题**
 
-```sh
-sudo su
-./afa.py -f -i <input_floder> -o <output_floder> -- <srv_elf_path> <ip> <port>
-```
+- `remote server`模式
+
+    **remote server**模式可以直接对远端正在运行的服务进行模糊测试，只需要服务对应的ip和port即可，使用方式
+    
+    ```sh
+    ./afa.py -f -i <input_floder> -m remote-sever -- <ip> <remote>
+    ```
+
+    **注意：由于模糊测试可能会导致服务crash，所以对在运行服务测试时，必须获得被测试方授权同意，此外被测试服务应有自动重启功能，以免影响正常运营。使用本工具导致的违法违规行为，皆与本工具无关。**
+
+- `normal`模式
+    
+    **normal**模式，为传统的AFL++功能，可以从STDIN和文件中进行读入，使用方式如下：
+    ```sh
+    ./afa.py -f -i <input_floder> -m normal -- <elf_path>       #标准输入模式
+    ./afa.py -f -i <input_floder> -m normal -- <elf_path> @@    #文件读入模式
+    ```
 
 
 

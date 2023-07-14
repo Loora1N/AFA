@@ -6,6 +6,14 @@ sudo apt-get update
 
 #firmadyne
 sudo apt-get install -y busybox-static fakeroot git dmsetup kpartx netcat-openbsd nmap python3-psycopg2 snmp uml-utilities util-linux vlan
+cd source
+sudo apt-get install postgresql
+sudo -u postgres createuser -P firmadyne
+sudo -u postgres createdb -O firmadyne firmware
+sudo -u postgres psql -d firmware < ./firmadyne/database/schema
+cd ./firmadyne
+./download.sh
+cd ../..
 
 #firmwalker
 npm i -g eslint
@@ -21,11 +29,13 @@ git clone https://github.com/AFLplusplus/AFLplusplus
 cd AFLplusplus
 make distrib
 sudo make install
+cd ../..
 
 #fuzzentry
 
 cd source/fuzzentry
 gcc fuzzentry.c -o fuzzentry
+cd ../..
 
 
 #binwalk
