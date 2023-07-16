@@ -1,6 +1,6 @@
 # Automated Firmware Analysis(AFA)
 
-Automated Firmware Analysis(AFA) 是Linux平台下针对固件分析的集成化命令行工具，在QEMU和AFL++的基础上进行设计实习。可以对多种类型和架构的固件完成静态分析、动态仿真、功能模块模糊测试以及敏感信息搜集，并保存相应报告结果。
+Automated Firmware Analysis(AFA) 是Linux平台下针对固件分析的集成化命令行工具，在QEMU和AFL++的基础上进行设计实现。可以对多种类型和架构的固件完成静态分析、动态仿真、功能模块模糊测试以及敏感信息搜集，并保存相应报告结果。
 
 Automated Firmware Analysis(AFA) is a command-line tool for the Linux platform, based on QEMU and AFL++. It can perform static analysis，simulation of firmware for different types and architectures of devices, fuzz functional modules, and automatically generate report files.
 
